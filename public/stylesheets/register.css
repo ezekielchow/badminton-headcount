@@ -17,8 +17,9 @@
 .form-input{
     width: 90%;
     height:18px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     padding: 5px;
+    border: 1px solid silver;
 }
 
 .form-submit{
@@ -26,7 +27,7 @@
     width: 250px;
     height: 35px;
     border-radius: 8px;
-    border: 0.5px solid silver;
+    border: 0.5px solid darkgray;
     background-color: white;
     cursor: pointer;
 }
