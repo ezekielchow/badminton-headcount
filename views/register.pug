@@ -7,13 +7,13 @@ block content
     h1(class="title") Badminton Headcount 
     h2 Registration
     div(class="form-box")
-      form(class="registration-form")
+      form(class="registration-form" action="/register" method="POST")
         label(for="email" class="form-label") Email
-        input(type="text" name="email" class="form-input")
+        input(type="text" name="email" class="form-input" required)
         label(for="password" class="form-label") Password
-        input(type="password" name="password" class="form-input")
+        input(type="password" name="password" class="form-input" required)
         label(for="password" class="form-label") Password Repeat
-        input(type="password" name="password_repeat" class="form-input")
+        input(type="password" name="password_repeat" class="form-input" required)
         button(type="submit" class="form-submit") Register
 
 
