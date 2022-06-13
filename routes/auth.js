@@ -32,7 +32,9 @@ passport.use(new LocalStrategy(async function verify(email, password, cb) {
 const router = express.Router()
 
 router.get('/register', authController.getRegister)
-router.post('/register', authController.postRegister)
+router.post('/register',
+    authController.validate('postRegister'),
+    authController.postRegister)
 router.post('/login', authController.postLogin)
 
 module.exports = router;

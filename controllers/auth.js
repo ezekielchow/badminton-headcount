@@ -1,23 +1,24 @@
 var passport = require('passport')
+const { body, validationResult } = require('express-validator');
+
+const validators = require('../helpers/validators')
 
 exports.getRegister = (req, res, next) => {
     res.render('register');
 };
 
 exports.postRegister = (req, res, next) => {
-    console.log('post reg', req.body);
 
     try {
-        const email = req.body.email
-        const password = req.body.password
-        const passwordRepeat = req.body.password_repeat
+        console.log('post reg', req.body);
 
-        if (!email || !password || !passwordRepeat) {
-            throw "Missing fields"
-        }
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            let errorMessages = errors.errors.map(el => el.msg)
+            console.log(errorMessages);
 
-        if (password !== passwordRepeat) {
-            throw "Passwords doesn't match"
+            req.flash('validationFailure', errorMessages)
+            return res.redirect('back')
         }
     } catch (error) {
         console.log(error);
@@ -29,4 +30,16 @@ exports.postLogin = (req, res, next) => {
         successRedirect: '/',
         failureRedirect: '/login'
     })
+}
+
+exports.validate = (method) => {
+    switch (method) {
+        case 'postRegister': {
+            return [
+                body('email').isEmail().normalizeEmail(),
+                body('password').isLength(5).trim().escape(),
+                body('passwordConfirmation').custom(validators.passwordConfirmation)
+            ]
+        }
+    }
 }

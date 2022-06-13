@@ -5,4 +5,10 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     block styles
   body
+    div(style="color:red;padding:5px;") #{messageFailure}
+    div(style="color:green;padding:5px;") #{messageSuccess}
+    div(style="color:red;padding:5px;") 
+      ul
+        each error in validationFailure
+          li= error
     block content

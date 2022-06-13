@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session')
+var flash = require('connect-flash')
 
 const authRoutes = require('./routes/auth')
 var indexRouter = require('./routes/index');
@@ -19,7 +21,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'my-badminton-secret',
+  cookie: {},
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash())
 
+// store three flash variables as global variables in views
+app.use((req, res, next) => {
+  res.locals.messageSuccess = req.flash('messageSuccess')
+  res.locals.messageFailure = req.flash('messageFailure')
+  res.locals.validationFailure = req.flash('validationFailure')
+  next();
+})
 app.use(authRoutes)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
