@@ -10,16 +10,17 @@ exports.getRegister = (req, res, next) => {
 exports.postRegister = (req, res, next) => {
 
     try {
-        console.log('post reg', req.body);
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             let errorMessages = errors.errors.map(el => el.msg)
-            console.log(errorMessages);
-
             req.flash('validationFailure', errorMessages)
+            req.flash('oldForm', req.body)
+
             return res.redirect('back')
         }
+
+        return res.redirect('back')
+
     } catch (error) {
         console.log(error);
     }
@@ -36,8 +37,8 @@ exports.validate = (method) => {
     switch (method) {
         case 'postRegister': {
             return [
-                body('email').isEmail().normalizeEmail(),
-                body('password').isLength(5).trim().escape(),
+                body('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
+                body('password').isLength(5).withMessage('Password must be at least 5 characters').trim().escape(),
                 body('passwordConfirmation').custom(validators.passwordConfirmation)
             ]
         }

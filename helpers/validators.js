@@ -1,7 +1,7 @@
 const User = require('../models/user')
 
 exports.passwordConfirmation = (value, { req }) => {
-    if (value !== req.body.password) {
+    if (req.body.password !== req.body.password_repeat) {
         throw new Error('Password confirmation does not match password');
     }
 

@@ -34,6 +34,10 @@ app.use((req, res, next) => {
   res.locals.messageSuccess = req.flash('messageSuccess')
   res.locals.messageFailure = req.flash('messageFailure')
   res.locals.validationFailure = req.flash('validationFailure')
+  res.locals.oldForm = req.flash('oldForm')
+  if (Array.isArray(res.locals.oldForm)) {
+    res.locals.oldForm = res.locals.oldForm[0]
+  }
   next();
 })
 app.use(authRoutes)
