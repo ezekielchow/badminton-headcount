@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 
 const validators = require('../helpers/validators')
 const User = require('../models/user')
@@ -29,7 +30,15 @@ exports.postRegister = async (req, res, next) => {
         const salt = await crypto.randomBytes(128).toString('hex')
         const password = await crypto.pbkdf2Sync(
             req.body.password, salt, 1000, 64, 'sha512').toString('hex')
+        const token = jwt.sign(
+            { user_id: user._id, email: user.email },
+            process.env.TOKEN_KEY,
+            {
+                expiresIn: "2h",
+            }
+        );
 
+        user.token = token
         user.salt = salt
         user.password = password
 
@@ -71,8 +80,21 @@ exports.postLogin = async (req, res, next) => {
             return res.redirect('back')
         }
 
-        return res.redirect('/dashboard')
+        const token = jwt.sign(
+            { user_id: user._id, email: user.email },
+            process.env.TOKEN_KEY,
+            {
+                expiresIn: "2h",
+            }
+        );
+        user.token = token
+        await user.save();
+
+        return res
+            .cookie("access_token", token)
+            .redirect('/dashboard')
     } catch (error) {
+        console.log(error);
         req.flash('oldForm', req.body)
         req.flash('messageFailure', error)
         return res.redirect('back')

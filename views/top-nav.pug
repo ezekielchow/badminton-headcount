@@ -4,7 +4,7 @@ div(class="top-nav")
   div(class="top-nav-navigation")
     div Headcount
     div(class="navigation-links")
-      if navbar.hasLogin
+      if navbar && navbar.hasLogin
         a(href="/login") Login
-      if navbar.hasRegister
+      if navbar && navbar.hasRegister
         a(href="/register") Register

@@ -6,9 +6,11 @@ var logger = require('morgan');
 var session = require('express-session')
 var flash = require('connect-flash')
 
+const headcountRoutes = require('./routes/headcount')
 const authRoutes = require('./routes/auth')
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const redirectIfAuthenticated = require('./middlewares/redirectIfAuthenticated')
+
+require("dotenv").config();
 
 var app = express();
 
@@ -23,7 +25,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'my-badminton-secret',
-  cookie: {},
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true
+  },
   resave: false,
   saveUninitialized: true
 }));
@@ -41,8 +46,8 @@ app.use((req, res, next) => {
   next();
 })
 app.use(authRoutes)
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(headcountRoutes)
+app.use('/', redirectIfAuthenticated);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
