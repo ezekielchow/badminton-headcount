@@ -3,26 +3,25 @@ extends layout
 block styles
   link(rel='stylesheet', href='/stylesheets/register.css')
 block content
-  main(class="container")
-    h1(class="title") Badminton Headcount 
-    h2 Registration
-    div(class="form-box")
-      form(class="registration-form" action="/register" method="POST")
-        label(for="email" class="form-label") Email
-        if oldForm && oldForm.hasOwnProperty('email')
-          input(type="text" name="email" class="form-input" value=oldForm.email required)
-        else
-          input(type="text" name="email" class="form-input" required)
-        label(for="password" class="form-label") Password
-        if oldForm && oldForm.hasOwnProperty('password')
-          input(type="password" name="password" class="form-input" value=oldForm.password required)
-        else
-          input(type="password" name="password" class="form-input" required)
-        label(for="password" class="form-label") Password Repeat
-        if oldForm && oldForm.hasOwnProperty('password_repeat')
-          input(type="password" name="password_repeat" class="form-input" value=oldForm.password_repeat required)
-        else
-          input(type="password" name="password_repeat" class="form-input" required)
-        button(type="submit" class="form-submit") Register
+  h1(class="title") Badminton Headcount 
+  h2 Registration
+  div(class="form-box")
+    form(class="registration-form" action="/register" method="POST")
+      label(for="email" class="form-label") Email
+      if oldForm && oldForm.hasOwnProperty('email')
+        input(type="text" name="email" class="form-input" value=oldForm.email required)
+      else
+        input(type="text" name="email" class="form-input" required)
+      label(for="password" class="form-label") Password
+      if oldForm && oldForm.hasOwnProperty('password')
+        input(type="password" name="password" class="form-input" value=oldForm.password required)
+      else
+        input(type="password" name="password" class="form-input" required)
+      label(for="password" class="form-label") Password Repeat
+      if oldForm && oldForm.hasOwnProperty('password_repeat')
+        input(type="password" name="password_repeat" class="form-input" value=oldForm.password_repeat required)
+      else
+        input(type="password" name="password_repeat" class="form-input" required)
+      button(type="submit" class="form-submit") Register
 
 

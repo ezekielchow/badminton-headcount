@@ -5,7 +5,11 @@ const validators = require('../helpers/validators')
 const User = require('../models/user')
 
 exports.getRegister = (req, res, next) => {
-    res.render('register');
+    res.render('register', {
+        'navbar': {
+            hasLogin: true
+        }
+    });
 };
 
 exports.postRegister = async (req, res, next) => {
@@ -42,7 +46,11 @@ exports.postRegister = async (req, res, next) => {
 }
 
 exports.getLogin = (req, res, next) => {
-    res.render('login')
+    res.render('login', {
+        'navbar': {
+            hasRegister: true
+        }
+    })
 }
 
 exports.postLogin = async (req, res, next) => {

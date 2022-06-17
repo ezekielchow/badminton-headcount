@@ -1,0 +1,10 @@
+link(rel='stylesheet', href='/stylesheets/top-nav.css')
+
+div(class="top-nav")
+  div(class="top-nav-navigation")
+    div Headcount
+    div(class="navigation-links")
+      if navbar.hasLogin
+        a(href="/login") Login
+      if navbar.hasRegister
+        a(href="/register") Register
