@@ -9,6 +9,7 @@ var flash = require('connect-flash')
 const headcountRoutes = require('./routes/headcount')
 const authRoutes = require('./routes/auth')
 const redirectIfAuthenticated = require('./middlewares/redirectIfAuthenticated')
+const showHeadcountIfExist = require('./middlewares/showHeadcountIfExist')
 
 require("dotenv").config();
 
@@ -45,8 +46,10 @@ app.use((req, res, next) => {
   }
   next();
 })
+
 app.use(authRoutes)
 app.use(headcountRoutes)
+app.get('/*', showHeadcountIfExist)
 app.use('/', redirectIfAuthenticated);
 
 // catch 404 and forward to error handler

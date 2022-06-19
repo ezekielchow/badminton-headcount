@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String
+    },
+    uniqueUrl: {
+        type: String,
+        default: null
     }
 });
 

@@ -92,7 +92,7 @@ exports.postLogin = async (req, res, next) => {
 
         return res
             .cookie("access_token", token)
-            .redirect('/dashboard')
+            .redirect('/')
     } catch (error) {
         console.log(error);
         req.flash('oldForm', req.body)

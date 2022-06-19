@@ -1,3 +1,5 @@
+const listEndpoints = require('express-list-endpoints')
+
 const User = require('../models/user')
 
 exports.passwordConfirmation = (value, { req }) => {
@@ -15,4 +17,23 @@ exports.emailIsUnique = value => {
             return Promise.reject('E-mail already in use');
         }
     });
+}
+
+exports.isValidSubUrl = (value, { req }) => {
+    const re = /^[a-z\-]+$/
+
+    if (!re.test(value)) {
+        throw new Error('Only use lower case letters and "-"')
+    }
+
+    const endPoints = listEndpoints(req.app)
+
+    endPoints.forEach(endPoint => {
+        if (endPoint.path.includes(value)) {
+            console.log('came in here');
+            throw new Error('Unique Url is already used');
+        }
+    });
+
+    return true;
 }

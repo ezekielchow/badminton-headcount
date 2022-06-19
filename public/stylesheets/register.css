@@ -20,6 +20,7 @@
     margin-bottom: 1.5rem;
     padding: 5px;
     border: 1px solid silver;
+    border-radius: 5px;
 }
 
 .form-submit{

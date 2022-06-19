@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 const config = process.env;
+const User = require('../models/user')
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     const token =
         req.body.token || req.query.token || req.headers["x-access-token"] || req.cookies.access_token;
 
@@ -12,8 +13,16 @@ const verifyToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, config.TOKEN_KEY);
         req.user = decoded;
-        return res.redirect('/dashboard')
+
+        const userFromDb = await User.findById(req.user.user_id).exec()
+
+        if (userFromDb.uniqueUrl) {
+            return res.redirect('/dashboard')
+        }
+
+        return res.redirect('/onboarding')
     } catch (err) {
+        console.log(err);
         return res.redirect('/login')
     }
 };

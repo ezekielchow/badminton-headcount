@@ -1,0 +1,17 @@
+extends ../layout
+
+block styles
+  link(rel='stylesheet', href='/stylesheets/register.css')
+block content
+  h2 Onboarding
+  div(class="form-box")
+    form(class="registration-form" action="/onboarding" method="POST")
+      label(for="uniqueUrl" class="form-label") Unique Url (Only use lower case letters and '-')
+      if oldForm && oldForm.hasOwnProperty('uniqueUrl')
+        input(type="text" name="uniqueUrl" class="form-input" placeholder=`Players will access using ${siteUrl}/unique_url` value=oldForm.uniqueUrl required)
+      else
+        input(type="text" name="uniqueUrl" class="form-input" placeholder=`Players will access using ${siteUrl}/unique_url` required)
+      button(type="submit" class="form-submit") Save
+
+
+
