@@ -10,6 +10,7 @@ const headcountRoutes = require('./routes/headcount')
 const authRoutes = require('./routes/auth')
 const redirectIfAuthenticated = require('./middlewares/redirectIfAuthenticated')
 const showHeadcountIfExist = require('./middlewares/showHeadcountIfExist')
+const models = require('./models/index')
 
 require("dotenv").config();
 

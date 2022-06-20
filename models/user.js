@@ -19,7 +19,13 @@ const userSchema = new mongoose.Schema({
     uniqueUrl: {
         type: String,
         default: null
-    }
+    },
+    headcounts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Headcount"
+        }
+    ]
 });
 
 module.exports = mongoose.model('User', userSchema)
