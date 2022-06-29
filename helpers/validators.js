@@ -1,4 +1,5 @@
 const listEndpoints = require('express-list-endpoints')
+const moment = require('moment')
 
 const User = require('../models/user')
 
@@ -34,6 +35,15 @@ exports.isValidSubUrl = (value, { req }) => {
             throw new Error('Unique Url is already used');
         }
     });
+
+    return true;
+}
+
+exports.isDatetime = (value, { req }) => {
+
+    if (!moment(value).isValid()) {
+        throw new Error('Not a valid date')
+    }
 
     return true;
 }

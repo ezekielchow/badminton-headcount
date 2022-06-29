@@ -1,0 +1,37 @@
+extends ../layout
+
+block styles
+  link(rel='stylesheet', href='/stylesheets/register.css')
+block content
+  h2 Add Session
+  div(class="form-box")
+    form(class="registration-form" action="/add-headcount" method="POST")
+      label(for="location" class="form-label") Location*
+      if oldForm && oldForm.hasOwnProperty('location')
+        input(type="text" name="location" class="form-input" value=oldForm.location required)
+      else
+        input(type="text" name="location" class="form-input" required)
+      label(for="datetime" class="form-label") Date & Time*
+      if oldForm && oldForm.hasOwnProperty('datetime')
+        input(type="datetime-local" name="datetime" class="form-input" value=oldForm.datetime required)
+      else
+        input(type="datetime-local" name="datetime" class="form-input" required)
+      label(for="totalPlayers" class="form-label") Number Of Players*
+      if oldForm && oldForm.hasOwnProperty('totalPlayers')
+        input(type="number" name="totalPlayers" class="form-input" step="1" value=oldForm.totalPlayers required)
+      else
+        input(type="number" name="totalPlayers" class="form-input" step="1" required)
+      label(for="details" class="form-label") Details (Optional)
+      if oldForm && oldForm.hasOwnProperty('details')
+        textarea(name="details" class="form-input" cols="50" rows="4") #{oldForm.details}
+      else
+        textarea(name="details" class="form-input" cols="50" rows="4")
+      label(for="password" class="form-label") Needs Password To RSVP (Optional)
+      if oldForm && oldForm.hasOwnProperty('password')
+        input(type="text" name="password" class="form-input" value=oldForm.password required)
+      else
+        input(type="text" name="password" class="form-input" required)
+      button(type="submit" class="form-submit") Save
+
+
+
