@@ -88,14 +88,14 @@ exports.validate = (method) => {
     switch (method) {
         case 'postOnboarding': {
             return [
-                body('uniqueUrl').custom(validators.isValidSubUrl),
+                body('uniqueUrl').custom(validators.isValidSubUrl).trim().escape(),
             ]
         }
         case 'postHeadcount': {
             return [
-                body('location').isLength({ min: 1, max: 255 }),
-                body('datetime').custom(validators.isDatetime),
-                body('totalPlayers').isNumeric().isLength({ min: 1 }),
+                body('location').isLength({ min: 1, max: 255 }).trim().escape(),
+                body('datetime').custom(validators.isDatetime).trim().escape(),
+                body('totalPlayers').isNumeric().isLength({ min: 1 }).trim().escape(),
             ]
         }
     }

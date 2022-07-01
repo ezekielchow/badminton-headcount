@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session')
 var flash = require('connect-flash')
+const cors = require('cors')
 
 const headcountRoutes = require('./routes/headcount')
 const authRoutes = require('./routes/auth')
@@ -15,6 +16,8 @@ const models = require('./models/index')
 require("dotenv").config();
 
 var app = express();
+
+app.use(cors())
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -19,10 +19,7 @@ exports.postRegister = async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             let errorMessages = errors.errors.map(el => el.msg)
-            req.flash('validationFailure', errorMessages)
-            req.flash('oldForm', req.body)
-
-            return res.redirect('back')
+            return res.status(500).json({ 'error': errorMessages })
         }
 
         const user = new User(req.body)
@@ -44,13 +41,16 @@ exports.postRegister = async (req, res, next) => {
 
         await user.save()
 
-        req.flash('messageSuccess', 'User successfully registered')
-        return res.redirect('/login')
+        return res
+            .json({
+                'data': {
+                    'user': { email: user.email, id: user._id },
+                    'access_token': token
+                }
+            })
 
     } catch (error) {
-        req.flash('oldForm', req.body)
-        req.flash('messageFailure', error)
-        return res.redirect('back')
+        return res.status(500).json({ 'error': error })
     }
 }
 
@@ -67,17 +67,13 @@ exports.postLogin = async (req, res, next) => {
         const user = await User.findOne({ email: req.body.email }).exec()
 
         if (!user) {
-            req.flash('oldForm', req.body)
-            req.flash('messageFailure', 'User not found')
-            return res.redirect('back')
+            return res.status(500).json({ 'error': 'Email or Password is incorrect' })
         }
 
         const hashedPassword = await crypto.pbkdf2Sync(req.body.password, user.salt, 1000, 64, 'sha512').toString('hex');
 
         if (user.password !== hashedPassword) {
-            req.flash('oldForm', req.body)
-            req.flash('messageFailure', 'Incorrect username or password')
-            return res.redirect('back')
+            return res.status(500).json({ 'error': 'Email or Password is incorrect' })
         }
 
         const token = jwt.sign(
@@ -91,13 +87,14 @@ exports.postLogin = async (req, res, next) => {
         await user.save();
 
         return res
-            .cookie("access_token", token)
-            .redirect('/')
+            .json({
+                'data': {
+                    'user': { email: user.email, id: user._id },
+                    'access_token': token
+                }
+            })
     } catch (error) {
-        console.log(error);
-        req.flash('oldForm', req.body)
-        req.flash('messageFailure', error)
-        return res.redirect('back')
+        return res.status(500).json({ 'error': error })
     }
 }
 
@@ -105,9 +102,9 @@ exports.validate = (method) => {
     switch (method) {
         case 'postRegister': {
             return [
-                body('email').isEmail().withMessage('Invalid Email').normalizeEmail(),
+                body('email').isEmail().withMessage('Invalid Email').normalizeEmail().custom(validators.emailIsUnique).trim().escape(),
                 body('password').isLength(5).withMessage('Password must be at least 5 characters').trim().escape(),
-                body('passwordConfirmation').custom(validators.passwordConfirmation)
+                body('passwordConfirmation').custom(validators.passwordConfirmation).trim().escape()
             ]
         }
     }
