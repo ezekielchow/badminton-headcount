@@ -21,25 +21,27 @@ exports.postOnboarding = async (req, res, next) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            let errorMessages = errors.errors.map(el => el.msg)
-            req.flash('validationFailure', errorMessages)
-            req.flash('oldForm', req.body)
-
-            return res.redirect('back')
+            let errorMessages = errors.errors.map(el => el.msg + "\n")
+            return res.status(500).json({ 'error': errorMessages })
         }
 
-        const user = await User.findById(req.user.user_id).exec()
+        const user = await User.findById(req.body.userId).exec()
+
+        if (!user) {
+            return res.status(500).json({ 'error': 'User doesn\'t exist' })
+        }
+
         user.uniqueUrl = req.body.uniqueUrl
         await user.save()
 
-        req.flash('messageSuccess', 'Updated!')
-        return res.redirect('/dashboard')
-
+        return res
+            .json({
+                'data': {
+                    'uniqueUrl': user.uniqueUrl,
+                }
+            })
     } catch (error) {
-        console.log(error);
-        req.flash('oldForm', req.body)
-        req.flash('messageFailure', error)
-        return res.redirect('back')
+        return res.status(500).json({ 'error': error })
     }
 }
 
@@ -52,35 +54,33 @@ exports.postHeadcount = async (req, res, next) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            let errorMessages = errors.errors.map(el => el.msg)
-            req.flash('validationFailure', errorMessages)
-            req.flash('oldForm', req.body)
-
-            return res.redirect('back')
+            let errorMessages = errors.errors.map(el => el.msg + "\n")
+            return res.status(500).json({ 'error': errorMessages })
         }
 
-        const host = await User.findById(req.user.user_id).exec()
+        const host = await User.findById(req.body.userId).exec()
 
         const headcount = new Headcount({
             host: host._id,
             location: req.body.location,
             datetime: moment(req.body.datetime).toISOString(),
             totalPlayers: req.body.totalPlayers,
-            details: req.body.players ?? null,
+            details: req.body.details ?? null,
             password: req.body.password ?? null,
         })
 
         await headcount.save()
 
-        // TODO: redirect to individual headcount page
-        req.flash('messageSuccess', 'User successfully registered')
-        return res.redirect('/login')
+        return res
+            .json({
+                'data': {
+                    'headcount': headcount,
+                }
+            })
 
     } catch (error) {
         console.log(error);
-        req.flash('oldForm', req.body)
-        req.flash('messageFailure', error)
-        return res.redirect('back')
+        return res.status(500).json({ 'error': error })
     }
 }
 
@@ -88,14 +88,18 @@ exports.validate = (method) => {
     switch (method) {
         case 'postOnboarding': {
             return [
-                body('uniqueUrl').custom(validators.isValidSubUrl).trim().escape(),
+                body('uniqueUrl').not().isEmpty().custom(validators.isValidSubUrl).trim().escape(),
+                body('userId').not().isEmpty().trim().escape()
             ]
         }
         case 'postHeadcount': {
             return [
-                body('location').isLength({ min: 1, max: 255 }).trim().escape(),
-                body('datetime').custom(validators.isDatetime).trim().escape(),
-                body('totalPlayers').isNumeric().isLength({ min: 1 }).trim().escape(),
+                body('location').not().isEmpty().isLength({ min: 1, max: 255 }).trim().escape(),
+                body('datetime').not().isEmpty().custom(validators.isDatetime).trim().escape(),
+                body('totalPlayers').not().isEmpty().isNumeric().isLength({ min: 1 }).trim().escape(),
+                body('details').isLength({ max: 1024 }).trim().escape(),
+                body('password').isLength({ max: 255 }).trim().escape(),
+                body('userId').not().isEmpty().trim().escape()
             ]
         }
     }
