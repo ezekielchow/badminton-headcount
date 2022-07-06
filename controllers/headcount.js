@@ -1,6 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const validators = require('../helpers/validators')
 const moment = require('moment')
+const mongoose = require('mongoose')
 
 const User = require('../models/user')
 const Headcount = require('../models/headcount')
@@ -74,7 +75,7 @@ exports.postHeadcount = async (req, res, next) => {
         return res
             .json({
                 'data': {
-                    'headcount': headcount,
+                    'headcount': headcount
                 }
             })
 
@@ -82,6 +83,41 @@ exports.postHeadcount = async (req, res, next) => {
         console.log(error);
         return res.status(500).json({ 'error': error })
     }
+}
+
+exports.listHeadcounts = async (req, res) => {
+
+    if (!req.query.userId) {
+        return res.status(500).json({ 'error': "Missing required credentials" })
+    }
+
+    const query = Headcount.find({ 'host': new mongoose.Types.ObjectId(req.query.userId) })
+    const totalRows = await query.clone().countDocuments()
+
+    if (req.query.perPage) {
+        query.limit(req.query.perPage)
+
+        if (req.query.currentPage && req.query.currentPage > 1) {
+            query.skip(req.query.currentPage - 1 * req.query.perPage)
+        }
+    }
+
+    const sortDirection = req.query?.sortDesc && req.query.sortDesc.toLowerCase() == 'true' ? 'desc' : 'asc'
+    if (req.query.sortBy) {
+        query.sort({ [req.query.sortBy]: sortDirection })
+    } else {
+        query.sort({ datetime: sortDirection })
+    }
+
+    const headcounts = await query.exec()
+
+    return res
+        .json({
+            'data': {
+                'headcounts': headcounts,
+                totalRows
+            }
+        })
 }
 
 exports.validate = (method) => {

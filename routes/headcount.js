@@ -10,5 +10,6 @@ const router = express.Router()
 router.post('/onboarding', isAuthenticated, headcountController.validate('postOnboarding'), headcountController.postOnboarding)
 // router.get('/add-headcount', isAuthenticated, headcountController.getHeadcountPage)
 router.post('/add-headcount', isAuthenticated, headcountController.validate('postHeadcount'), headcountController.postHeadcount)
+router.get('/list-headcounts', isAuthenticated, headcountController.listHeadcounts)
 
 module.exports = router;

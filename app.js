@@ -52,9 +52,9 @@ app.use((req, res, next) => {
 })
 
 app.use(authRoutes)
-app.use(headcountRoutes)
-app.get('/*', showHeadcountIfExist)
-app.use('/', redirectIfAuthenticated);
+app.use('/headcount', headcountRoutes)
+// app.get('/*', showHeadcountIfExist)
+// app.use('/', redirectIfAuthenticated);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
