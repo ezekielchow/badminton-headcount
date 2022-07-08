@@ -9,7 +9,8 @@ const router = express.Router()
 // router.get('/onboarding', isAuthenticated, headcountController.getOnboarding)
 router.post('/onboarding', isAuthenticated, headcountController.validate('postOnboarding'), headcountController.postOnboarding)
 // router.get('/add-headcount', isAuthenticated, headcountController.getHeadcountPage)
-router.post('/add-headcount', isAuthenticated, headcountController.validate('postHeadcount'), headcountController.postHeadcount)
-router.get('/list-headcounts', isAuthenticated, headcountController.listHeadcounts)
+router.post('/add', isAuthenticated, headcountController.validate('postHeadcount'), headcountController.postHeadcount)
+router.get('/list', isAuthenticated, headcountController.listHeadcounts)
+router.get('/:id', isAuthenticated, headcountController.getHeadcount)
 
 module.exports = router;

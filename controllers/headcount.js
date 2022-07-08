@@ -87,37 +87,56 @@ exports.postHeadcount = async (req, res, next) => {
 
 exports.listHeadcounts = async (req, res) => {
 
-    if (!req.query.userId) {
-        return res.status(500).json({ 'error': "Missing required credentials" })
-    }
-
-    const query = Headcount.find({ 'host': new mongoose.Types.ObjectId(req.query.userId) })
-    const totalRows = await query.clone().countDocuments()
-
-    if (req.query.perPage) {
-        query.limit(req.query.perPage)
-
-        if (req.query.currentPage && req.query.currentPage > 1) {
-            query.skip(req.query.currentPage - 1 * req.query.perPage)
+    try {
+        if (!req.query.userId) {
+            return res.status(500).json({ 'error': "Missing required credentials" })
         }
-    }
 
-    const sortDirection = req.query?.sortDesc && req.query.sortDesc.toLowerCase() == 'true' ? 'desc' : 'asc'
-    if (req.query.sortBy) {
-        query.sort({ [req.query.sortBy]: sortDirection })
-    } else {
-        query.sort({ datetime: sortDirection })
-    }
+        const query = Headcount.find({ 'host': new mongoose.Types.ObjectId(req.query.userId) })
+        const totalRows = await query.clone().countDocuments()
 
-    const headcounts = await query.exec()
+        if (req.query.perPage) {
+            query.limit(req.query.perPage)
 
-    return res
-        .json({
-            'data': {
-                'headcounts': headcounts,
-                totalRows
+            if (req.query.currentPage && req.query.currentPage > 1) {
+                query.skip(req.query.currentPage - 1 * req.query.perPage)
             }
-        })
+        }
+
+        const sortDirection = req.query?.sortDesc && req.query.sortDesc.toLowerCase() == 'true' ? 'desc' : 'asc'
+        if (req.query.sortBy) {
+            query.sort({ [req.query.sortBy]: sortDirection })
+        } else {
+            query.sort({ datetime: sortDirection })
+        }
+
+        const headcounts = await query.exec()
+
+        return res
+            .json({
+                'data': {
+                    'headcounts': headcounts,
+                    totalRows
+                }
+            })
+    } catch (error) {
+        return res.status(500).json({ 'error': 'Unable to list Sessions' })
+    }
+}
+
+exports.getHeadcount = async (req, res) => {
+
+    try {
+        const headcount = await Headcount.findById(req.params.id)
+
+        return res
+            .json({
+                headcount
+            })
+
+    } catch (error) {
+        return res.status(500).json({ 'error': 'Unable to find Session' })
+    }
 }
 
 exports.validate = (method) => {
