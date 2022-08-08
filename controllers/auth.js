@@ -104,7 +104,7 @@ exports.validate = (method) => {
             return [
                 body('email').not().isEmpty().isEmail().withMessage('Invalid Email').normalizeEmail().custom(validators.emailIsUnique).trim().escape(),
                 body('password').not().isEmpty().isLength(5).withMessage('Password must be at least 5 characters').trim().escape(),
-                body('passwordConfirmation').not().isEmpty().custom(validators.passwordConfirmation).trim().escape()
+                body('passwordRepeat').not().isEmpty().custom(validators.passwordConfirmation).trim().escape()
             ]
         }
     }
