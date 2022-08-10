@@ -31,7 +31,6 @@ exports.isValidSubUrl = (value, { req }) => {
 
     endPoints.forEach(endPoint => {
         if (endPoint.path.includes(value)) {
-            console.log('came in here');
             throw new Error('Unique Url is already used');
         }
     });

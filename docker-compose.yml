@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  headcount-backend:
+    build:
+      context: ./
+      target: dev
+    volumes:
+      - .:/src
+    command: npm run start
+    environment:
+      NODE_ENV: development
+      DEBUG: 'nodejs-docker-express: *'
+    networks:
+      - shared-network
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+  mongodb:
+    image: mongo:4.2
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: Badminton_Headcount
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - '${FORWARD_DB_PORT:-27071}:27071'
+    volumes:
+      - 'mongo-volume:/data/db'
+    networks:
+      - shared-network
+networks:
+  shared-network:
+    name: headcount-network
+    driver: bridge
+volumes:
+  mongo-volume:
+    driver: local
