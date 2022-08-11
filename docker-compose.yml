@@ -4,9 +4,11 @@ services:
     build:
       context: ./
       target: dev
+    ports:
+      - '${APP_PORT:-3001}:3001'
     volumes:
       - .:/src
-    command: npm run start
+    command: npm run dev
     environment:
       NODE_ENV: development
       DEBUG: 'nodejs-docker-express: *'
@@ -21,14 +23,13 @@ services:
     restart: always
     environment:
       MONGO_INITDB_DATABASE: Badminton_Headcount
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - '${FORWARD_DB_PORT:-27071}:27071'
     volumes:
       - 'mongo-volume:/data/db'
     networks:
       - shared-network
+    command: mongod
 networks:
   shared-network:
     name: headcount-network

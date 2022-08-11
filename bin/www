@@ -28,6 +28,7 @@ var server = http.createServer(app);
 
 mongoose.connect('mongodb://mongodb:27017/Badminton_Headcount')
   .then(() => {
+    console.log('Mongodb: Successfully connected')
     server.listen(port);
   })
   .catch(err => {
